@@ -1,5 +1,6 @@
-import type { Course } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+
+type CourseRecord = Awaited<ReturnType<typeof prisma.course.findMany>>[number];
 
 export type CourseCard = {
   id: number;
@@ -68,7 +69,7 @@ export async function getFeaturedCourses(limit = 6): Promise<CourseCard[]> {
       take: limit
     });
 
-    return records.map((record: Course) => ({
+    return records.map((record: CourseRecord) => ({
       id: record.id,
       title: record.title,
       subtitle: record.subtitle,
