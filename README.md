@@ -50,12 +50,3 @@ npm run db:generate
 npm run db:migrate
 npm run db:seed
 ```
-
-## Deployment note
-This is a **single Next.js service** (frontend + backend together), so you do not need a separate `NEXT_PUBLIC_APP_URL` env var for split services.
-Use one Render web service with Node runtime and run it with:
-
-```bash
-npm install && npm run build
-npm run start
-```

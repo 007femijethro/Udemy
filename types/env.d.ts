@@ -4,6 +4,7 @@ declare namespace NodeJS {
     REDIS_URL?: string;
     STRIPE_SECRET_KEY?: string;
     STRIPE_WEBHOOK_SECRET?: string;
+    NEXT_PUBLIC_APP_URL?: string;
     MUX_TOKEN_ID?: string;
     MUX_TOKEN_SECRET?: string;
     S3_ENDPOINT?: string;
