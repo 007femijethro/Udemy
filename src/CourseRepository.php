@@ -15,7 +15,7 @@ final class CourseRepository
     {
         $query = <<<'SQL'
             SELECT id, title, subtitle, instructor, category, price_usd, rating
-            FROM courses
+            FROM ud.course
             ORDER BY rating DESC, id ASC
             LIMIT :limit
         SQL;

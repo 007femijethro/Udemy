@@ -37,8 +37,8 @@ final class Database
         $host = $parts['host'];
         $port = (string)($parts['port'] ?? 5432);
         $dbname = ltrim($parts['path'], '/');
-        $user = $parts['user'] ?? '';
-        $password = $parts['pass'] ?? '';
+        $user = isset($parts['user']) ? rawurldecode($parts['user']) : '';
+        $password = isset($parts['pass']) ? rawurldecode($parts['pass']) : '';
 
         $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $dbname);
 

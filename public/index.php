@@ -45,7 +45,7 @@ try {
         <?php if ($error !== null): ?>
             <p class="error">Database not connected yet: <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
         <?php elseif (count($courses) === 0): ?>
-            <p>No courses yet. Run <code>database/schema.sql</code> to seed demo data.</p>
+            <p>No courses yet. Run <code>database/schema.sql</code> to create and seed <code>ud.course</code>.</p>
         <?php else: ?>
             <div class="grid">
                 <?php foreach ($courses as $course): ?>
