@@ -1,39 +1,52 @@
-# Udemy-like Website Starter (PHP + PostgreSQL)
+# Udemy-like Platform Starter (Next.js + TypeScript)
 
-This repository contains a minimal Udemy-style starter site built with PHP.
+This project now follows your requested architecture and **does not use PHP**.
 
-## What is included
-- Home page with hero section and featured courses grid.
-- `CourseRepository` to load courses from PostgreSQL.
-- PDO connection helper that accepts either:
-  - `DATABASE_URL` (URI style), or
-  - separate `DB_*` environment variables.
-- SQL schema + seed file using the `ud` schema and `ud.course` table.
+## Stack
+- **Frontend/Backend:** Next.js (App Router) + TypeScript
+- **Database:** PostgreSQL + Prisma
+- **Caching/queues:** Redis (ready via `lib/redis.ts`)
+- **Payments:** Stripe (ready via `lib/stripe.ts`)
+- **Media/storage:** Mux + S3/CDN env placeholders included
 
-## Quick start
-1. Create or use a PostgreSQL database.
-2. Run schema and seed script from `database/schema.sql`.
-3. Copy `.env.example` to `.env` and set values.
-4. Start PHP server:
-
-```bash
-php -S 0.0.0.0:8000 -t public
-```
-
-Open `http://localhost:8000`.
-
-## DB connection type to use
-Use **URI** (recommended) with a PostgreSQL connection string in `DATABASE_URL`:
+## Connection type for DB
+Use **URI** connection format in `DATABASE_URL`:
 
 ```env
 DATABASE_URL=postgresql://postgres:Omodara4wife%24@db.qxchnkfmauykcywyhwwt.supabase.co:5432/postgres
 ```
 
-> Note: `%24` is the URL-encoded form of `$` in the password.
+> `%24` is URL-encoded `$` in password.
 
-If your provider gives separate fields, you can use:
-- `DB_HOST`
-- `DB_PORT`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
+## Table naming rule
+All database tables are mapped to the **`ud` schema** and names like `ud.course`, `ud.user`, etc.
+- Prisma models use `@@schema("ud")` + `@@map("...")`.
+- SQL bootstrap script creates tables as `ud.<name>`.
+
+## Core modules scaffolded
+- public landing page (`app/(marketing)/page.tsx`)
+- API health endpoint (`app/api/health/route.ts`)
+- courses endpoint (`app/api/courses/route.ts`)
+- data layer (`lib/prisma.ts`, `lib/course-service.ts`)
+- infra connectors (`lib/redis.ts`, `lib/stripe.ts`)
+- database schema (`prisma/schema.prisma`, `database/schema.sql`)
+
+## Quick start
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Database setup options
+### Option A: SQL bootstrap
+Run `database/schema.sql` in your PostgreSQL instance.
+
+### Option B: Prisma workflow
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+```
