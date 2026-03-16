@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  fullName  String
+  createdAt DateTime @default(now())
+
+  instructorProfile InstructorProfile?
+  enrollments       Enrollment[]
+  orders            Order[]
+
+  @@map("user")
+  @@schema("ud")
+}
+
+model InstructorProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  bio       String?
+  createdAt DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id])
+  courses Course[]
+
+  @@map("instructor_profile")
+  @@schema("ud")
+}
+
+model Course {
+  id           Int      @id @default(autoincrement())
+  instructorId String
+  title        String
+  subtitle     String
+  description  String?
+  category     String
+  priceUsd     Decimal  @db.Decimal(6, 2)
+  rating       Decimal  @db.Decimal(3, 2) @default(0)
+  isPublished  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  instructor  InstructorProfile @relation(fields: [instructorId], references: [id])
+  sections    Section[]
+  reviews     Review[]
+  enrollments Enrollment[]
+
+  @@map("course")
+  @@schema("ud")
+}
+
+model Section {
+  id       Int    @id @default(autoincrement())
+  courseId Int
+  title    String
+  position Int
+
+  course  Course   @relation(fields: [courseId], references: [id])
+  lessons Lesson[]
+
+  @@map("section")
+  @@schema("ud")
+}
+
+model Lesson {
+  id         Int      @id @default(autoincrement())
+  sectionId  Int
+  title      String
+  contentUrl String?
+  position   Int
+  createdAt  DateTime @default(now())
+
+  section        Section          @relation(fields: [sectionId], references: [id])
+  lessonProgress LessonProgress[]
+
+  @@map("lesson")
+  @@schema("ud")
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   Int
+  enrolledAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("enrollment")
+  @@schema("ud")
+}
+
+model Order {
+  id                  String   @id @default(cuid())
+  userId              String
+  amountUsd           Decimal  @db.Decimal(8, 2)
+  stripePaymentIntent String?
+  status              String
+  createdAt           DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("order")
+  @@schema("ud")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  courseId  Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@map("review")
+  @@schema("ud")
+}
+
+model LessonProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  Int
+  progress  Int
+  updatedAt DateTime @updatedAt
+
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+  @@schema("ud")
+}
